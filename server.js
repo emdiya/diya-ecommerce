@@ -5,9 +5,9 @@ const cors = require("cors");
 const app = express();
 
 app.use(express.json());
+require("./app/router/test.route")(app);
 
-const db = required("./app/model/index");
-
+const db = require("./app/model/index");
 db.sequelize.sync()
     .then(() => {
         console.log("Synced db.");
