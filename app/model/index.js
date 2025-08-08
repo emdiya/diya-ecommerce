@@ -28,6 +28,6 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.tutorials = require("./test.model.js")(sequelize, Sequelize);
+db.tests = require("./test.model.js")(sequelize, Sequelize);
 
 module.exports = db;

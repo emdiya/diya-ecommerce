@@ -1,6 +1,4 @@
-const db = require("../model");
-const Test = db.tests;
-const Op = db.Sequelize.Op;
+const testService = require("../service/test.service");
 
 //? Create and Save a new Tutorial
 exports.create = (req, res) => {
@@ -20,7 +18,7 @@ exports.create = (req, res) => {
     }
 
     //! Save Tutorial in the database
-    Test.create(test)
+    testService.create(test)
         .then(data => {
             res.send(data);
         })
@@ -36,9 +34,8 @@ exports.create = (req, res) => {
 //? Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
     const title = req.query.title;
-    var condition = title ? { title: { [Op.iLike]: `%${title}%` } } : null;
 
-    Test.findAll({ where: condition })
+    testService.findAll(title)
         .then(data => {
             if (data.length > 0) {
                 res.send(data);
@@ -62,7 +59,7 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    Test.findByPk(id)
+    testService.findOne(id)
         .then(data => {
             if (data) {
                 res.send(data);
@@ -86,11 +83,9 @@ exports.update = (req, res) => {
     const id = req.params.id;
 
 
-    Test.update(req.body, {
-        where: { id: id }
-    })
+    testService.update(req.body, id)
         .then(num => {
-            if (num == 1) {
+            if (num[0] === 1) {
                 res.send({
                     message: "Tutorial was updated successfully."
                 });
@@ -112,9 +107,7 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    Test.destroy({
-        where: { id: id }
-    })
+    testService.deleteById(id)
         .then(num => {
             if (num == 1) {
                 res.send({
@@ -136,10 +129,7 @@ exports.delete = (req, res) => {
 
 // Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
-    Test.destroy({
-        where: {},
-        truncate: false
-    })
+    testService.deleteAll()
         .then(nums => {
             res.send({ message: `${nums} Tutorials were deleted successfully!` });
         })
@@ -154,7 +144,7 @@ exports.deleteAll = (req, res) => {
 
 //? Find all published Tutorials
 exports.findAllPublished = (req, res) => {
-    Test.findAll({ where: { published: true } })
+    testService.findAllPublished()
         .then(data => {
             res.send(data);
         })
